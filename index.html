@@ -96,83 +96,84 @@
         }
 
         /* ==================== SCREEN 1: WELCOME ==================== */
-        #screen-welcome .boarding-card {
-            background: var(--bg-panel);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            border-radius: 12px;
-            padding: clamp(1.5rem, 5vw, 3rem);
-            max-width: 460px;
+        #screen-welcome .welcome-wrapper {
+            max-width: 760px;
             width: 100%;
-            text-align: center;
             animation: cardEntrance 0.8s ease-out;
-            position: relative;
-            overflow: hidden;
         }
-        #screen-welcome .boarding-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--gold), var(--pink), var(--gold));
-        }
-        .welcome-overline {
-            font-family: var(--font-mono);
-            font-size: clamp(0.7rem, 2vw, 0.8rem);
-            color: var(--text-muted);
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            margin-bottom: 0.5rem;
-        }
-        .welcome-flight {
-            font-family: var(--font-mono);
-            font-size: clamp(2rem, 7vw, 3.5rem);
-            color: var(--gold);
-            font-weight: 700;
-            line-height: 1.1;
-        }
-        .welcome-flight span {
-            font-size: clamp(1rem, 3.5vw, 1.5rem);
-            display: block;
-            color: var(--text);
-            margin-top: 0.25rem;
-        }
-        .welcome-passenger {
-            margin: 1.5rem 0;
-            padding: 1rem 0;
-            border-top: 1px dashed rgba(255,255,255,0.1);
-            border-bottom: 1px dashed rgba(255,255,255,0.1);
-        }
-        .welcome-passenger .name {
-            font-family: var(--font-mono);
-            font-size: clamp(1.5rem, 5vw, 2.25rem);
-            color: var(--pink);
-            letter-spacing: 0.1em;
-        }
-        .welcome-barcode {
-            height: 36px;
-            margin: 1.25rem auto;
-            max-width: 200px;
-            background: repeating-linear-gradient(
-                90deg,
-                var(--text) 0px, var(--text) 2px,
-                transparent 2px, transparent 5px,
-                var(--text) 5px, var(--text) 6px,
-                transparent 6px, transparent 8px,
-                var(--text) 8px, var(--text) 11px,
-                transparent 11px, transparent 13px,
-                var(--text) 13px, var(--text) 14px,
-                transparent 14px, transparent 17px,
-                var(--text) 17px, var(--text) 20px,
-                transparent 20px, transparent 22px
-            );
-            opacity: 0.3;
-        }
-
         @keyframes cardEntrance {
             from { opacity: 0; transform: translateY(30px) scale(0.96); }
             to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .welcome-heading {
+            text-align: center;
+            margin-bottom: 1.25rem;
+        }
+        .welcome-heading .overline {
+            font-family: var(--font-mono);
+            font-size: clamp(0.65rem, 1.8vw, 0.8rem);
+            color: var(--text-muted);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+        }
+        .welcome-heading .title {
+            font-family: var(--font-mono);
+            font-size: clamp(1.4rem, 4.5vw, 2.2rem);
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        /* Tear-off mechanics */
+        .bp-stub.tearable {
+            cursor: grab;
+            user-select: none;
+            -webkit-user-select: none;
+            position: relative;
+            z-index: 5;
+        }
+        .bp-stub.tearable:active {
+            cursor: grabbing;
+        }
+        .bp-stub.torn {
+            transition: transform 0.45s ease-in, opacity 0.4s ease-in;
+            transform: translateX(120%) rotate(8deg) !important;
+            opacity: 0 !important;
+            pointer-events: none;
+        }
+        .bp-stub.snapping {
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+
+        /* Tear hint */
+        .tear-hint {
+            font-family: var(--font-mono);
+            font-size: clamp(0.55rem, 1.3vw, 0.65rem);
+            color: #999;
+            text-align: center;
+            margin-top: 0.5rem;
+            letter-spacing: 0.08em;
+            animation: tearPulse 2s ease-in-out infinite;
+        }
+        .tear-hint .arrow {
+            display: inline-block;
+            animation: tearSlide 1.5s ease-in-out infinite;
+        }
+        @keyframes tearPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        @keyframes tearSlide {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(5px); }
+        }
+
+        /* Pulsing seam on welcome screen */
+        #screen-welcome .bp-seam {
+            animation: seamPulse 2s ease-in-out infinite;
+        }
+        @keyframes seamPulse {
+            0%, 100% { border-color: rgba(0,0,0,0.12); }
+            50% { border-color: rgba(236, 72, 153, 0.4); }
         }
 
         /* ==================== SCREEN 2: CHECK-IN ==================== */
@@ -828,23 +829,25 @@
             color: var(--text-muted);
             margin-bottom: 1.5rem;
         }
-        .echo-section {
-            margin-top: 1rem;
+        .pets-section {
+            display: flex;
+            justify-content: center;
+            gap: clamp(1rem, 4vw, 2rem);
+            margin-top: 1.25rem;
         }
-        .echo-dog {
-            font-size: clamp(2.5rem, 8vw, 4rem);
-            display: inline-block;
-            animation: echoWag 0.4s ease-in-out infinite alternate;
+        .pet-photo {
+            width: clamp(80px, 20vw, 130px);
+            border-radius: 50%;
+            animation: celebrationBounce 0.6s ease infinite alternate;
         }
-        @keyframes echoWag {
-            from { transform: rotate(-8deg); }
-            to { transform: rotate(8deg); }
+        .pet-photo-delay {
+            animation-delay: 0.2s;
         }
-        .echo-text {
+        .pets-text {
             font-family: var(--font-mono);
             font-size: clamp(0.85rem, 2.5vw, 1.05rem);
             color: var(--gold);
-            margin-top: 0.5rem;
+            margin-top: 0.75rem;
             letter-spacing: 0.1em;
         }
 
@@ -947,18 +950,103 @@
 
     <!-- ==================== SCREEN 1: WELCOME ==================== -->
     <div id="screen-welcome" class="screen active">
-        <div class="boarding-card">
-            <div class="welcome-overline">Now Boarding</div>
-            <div class="welcome-flight">
-                FLIGHT 214
-                <span>Valentine's Day 2026</span>
+        <div class="welcome-wrapper">
+            <div class="welcome-heading">
+                <div class="overline">Now Boarding</div>
+                <div class="title">Flight 214 — Valentine's Day 2026</div>
             </div>
-            <div class="welcome-passenger">
-                <div class="label">Passenger</div>
-                <div class="name">KAT</div>
+            <div class="bp" id="welcome-bp">
+                <div class="bp-cutout bp-cutout-top"></div>
+                <div class="bp-cutout bp-cutout-bottom"></div>
+                <div class="bp-seam"></div>
+
+                <div class="bp-main">
+                    <div class="bp-main-top">
+                        <div class="bp-endpoint">
+                            <div class="bp-lbl">From:</div>
+                            <div class="bp-code">SGL</div>
+                            <div class="bp-city">Single Life</div>
+                            <div class="bp-datetime">Feb 14, 2026<br>Departure</div>
+                        </div>
+                        <div class="bp-plane-area">
+                            <svg class="bp-plane-icon" viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+                            <div class="bp-arrow">&#10132;</div>
+                        </div>
+                        <div class="bp-endpoint" style="text-align:right">
+                            <div class="bp-lbl">To:</div>
+                            <div class="bp-code">VLD</div>
+                            <div class="bp-city">Valentine's Day</div>
+                            <div class="bp-datetime">Feb 14, 2026<br>Forever</div>
+                        </div>
+                    </div>
+                    <div class="bp-main-bottom">
+                        <div class="bp-field">
+                            <div class="bp-field-lbl">Passenger</div>
+                            <div class="bp-field-val">KAT</div>
+                        </div>
+                        <div class="bp-field">
+                            <div class="bp-field-lbl">Flight</div>
+                            <div class="bp-field-val">FL 214</div>
+                        </div>
+                        <div class="bp-field">
+                            <div class="bp-field-lbl">Seat</div>
+                            <div class="bp-field-val">NIK+KAT</div>
+                        </div>
+                        <div class="bp-field">
+                            <div class="bp-field-lbl">Gate</div>
+                            <div class="bp-field-val">14</div>
+                        </div>
+                        <div class="bp-field">
+                            <div class="bp-field-lbl">Terminal</div>
+                            <div class="bp-field-val">LOVE</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bp-stub tearable" id="welcome-stub">
+                    <div class="bp-stub-title">Boarding Pass</div>
+                    <div class="bp-stub-route">
+                        <div>
+                            <div class="bp-s-lbl">From:</div>
+                            <div class="bp-s-code">SGL</div>
+                            <div class="bp-s-city">Single Life</div>
+                            <div class="bp-s-date">Feb 14, 2026<br>Departure</div>
+                        </div>
+                        <div>
+                            <div class="bp-s-lbl">To:</div>
+                            <div class="bp-s-code">VLD</div>
+                            <div class="bp-s-city">Valentine's</div>
+                            <div class="bp-s-date">Feb 14, 2026<br>Forever</div>
+                        </div>
+                    </div>
+                    <div class="bp-stub-details">
+                        <div>
+                            <div class="bp-sd-lbl">Passenger</div>
+                            <div class="bp-sd-val">KAT</div>
+                        </div>
+                        <div>
+                            <div class="bp-sd-lbl">Flight</div>
+                            <div class="bp-sd-val">FL 214</div>
+                        </div>
+                    </div>
+                    <div class="bp-stub-row3">
+                        <div>
+                            <div class="bp-sd-lbl">Seat</div>
+                            <div class="bp-sd-val">NIK+KAT</div>
+                        </div>
+                        <div>
+                            <div class="bp-sd-lbl">Gate</div>
+                            <div class="bp-sd-val">14</div>
+                        </div>
+                        <div>
+                            <div class="bp-sd-lbl">Terminal</div>
+                            <div class="bp-sd-val">LOVE</div>
+                        </div>
+                    </div>
+                    <div class="bp-barcode"></div>
+                    <div class="tear-hint">Tear to board <span class="arrow">→</span></div>
+                </div>
             </div>
-            <div class="welcome-barcode"></div>
-            <button class="btn" onclick="goToScreen('screen-checkin')">Proceed to Check-In</button>
         </div>
     </div>
 
@@ -1169,10 +1257,15 @@
             <div class="celebration-emoji">💖</div>
             <div class="celebration-title">Welcome Aboard, Valentine!</div>
             <div class="celebration-subtitle">Flight 214 is now departing. Final destination: forever.</div>
-            <div class="echo-section">
-                <div class="echo-dog">🐶</div>
-                <div class="echo-text">Echo approves! 🐾</div>
+            <div class="pets-section">
+                <div class="pet">
+                    <img src="7fc83496-7eeb-42a7-9aef-58d59279021f-removebg-preview.png" alt="Echo" class="pet-photo">
+                </div>
+                <div class="pet">
+                    <img src="3e43d530-f327-405a-9d81-849037cbc42c-removebg-preview.png" alt="Luna" class="pet-photo pet-photo-delay">
+                </div>
             </div>
+            <div class="pets-text">Luna and Echo approve! 🐾</div>
         </div>
     </div>
 
@@ -1193,6 +1286,65 @@
         /* ==================== STATE ==================== */
         let currentScreen = 'screen-welcome';
         let audioCtx = null;
+
+        /* ==================== TEAR-OFF MECHANIC ==================== */
+        (function initTear() {
+            const stub = document.getElementById('welcome-stub');
+            if (!stub) return;
+
+            let dragging = false;
+            let startX = 0;
+            let dx = 0;
+            const TEAR_THRESHOLD = 80;
+
+            function getX(e) {
+                return e.touches ? e.touches[0].clientX : e.clientX;
+            }
+
+            function onStart(e) {
+                dragging = true;
+                startX = getX(e);
+                dx = 0;
+                stub.classList.remove('snapping');
+                stub.style.transition = 'none';
+            }
+
+            function onMove(e) {
+                if (!dragging) return;
+                e.preventDefault();
+                dx = Math.max(0, getX(e) - startX);
+                const rotate = dx * 0.04;
+                const opacity = Math.max(0, 1 - dx / 250);
+                stub.style.transform = `translateX(${dx}px) rotate(${rotate}deg)`;
+                stub.style.opacity = opacity;
+            }
+
+            function onEnd() {
+                if (!dragging) return;
+                dragging = false;
+
+                if (dx >= TEAR_THRESHOLD) {
+                    // Torn off!
+                    stub.classList.add('torn');
+                    stub.style.transform = '';
+                    stub.style.opacity = '';
+                    setTimeout(() => goToScreen('screen-checkin'), 500);
+                } else {
+                    // Snap back
+                    stub.classList.add('snapping');
+                    stub.style.transform = 'translateX(0) rotate(0deg)';
+                    stub.style.opacity = '1';
+                }
+                dx = 0;
+            }
+
+            stub.addEventListener('mousedown', onStart);
+            stub.addEventListener('touchstart', onStart, { passive: true });
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('touchmove', onMove, { passive: false });
+            document.addEventListener('mouseup', onEnd);
+            document.addEventListener('touchend', onEnd);
+        })();
 
         /* ==================== SCREEN NAVIGATION ==================== */
         function goToScreen(targetId) {
