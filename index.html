@@ -124,56 +124,89 @@
         }
 
         /* Tear-off mechanics */
-        .bp-stub.tearable {
-            cursor: grab;
-            user-select: none;
-            -webkit-user-select: none;
-            position: relative;
-            z-index: 5;
-        }
-        .bp-stub.tearable:active {
-            cursor: grabbing;
-        }
         .bp-stub.torn {
-            transition: transform 0.45s ease-in, opacity 0.4s ease-in;
-            transform: translateX(120%) rotate(8deg) !important;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.45s ease-in;
+            transform: translateX(120%) rotate(6deg) !important;
             opacity: 0 !important;
             pointer-events: none;
         }
-        .bp-stub.snapping {
-            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+
+        /* Keep welcome bp horizontal on all screens */
+        #screen-welcome .bp { flex-direction: row !important; }
+
+        /* Tear track overlay on the seam */
+        .tear-track {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 35%;
+            width: 48px;
+            transform: translateX(50%);
+            z-index: 12;
+            cursor: pointer;
+            touch-action: none;
+        }
+        .tear-progress {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 3px;
+            height: 0;
+            background: var(--pink);
+            transform: translateX(-50%);
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(236, 72, 153, 0.6);
+        }
+        .tear-indicator {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 18px;
+            height: 18px;
+            background: var(--pink);
+            border: 2.5px solid #fff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 14px rgba(236, 72, 153, 0.7);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.15s;
+        }
+        .tear-indicator.visible {
+            opacity: 1;
         }
 
-        /* Tear hint */
-        .tear-hint {
+        /* Tear hint below the boarding pass */
+        .tear-hint-below {
             font-family: var(--font-mono);
-            font-size: clamp(0.55rem, 1.3vw, 0.65rem);
-            color: #999;
+            font-size: clamp(0.65rem, 1.6vw, 0.78rem);
+            color: var(--text-muted);
             text-align: center;
-            margin-top: 0.5rem;
-            letter-spacing: 0.08em;
-            animation: tearPulse 2s ease-in-out infinite;
+            margin-top: 1rem;
+            letter-spacing: 0.1em;
+            animation: tearPulse 2.5s ease-in-out infinite;
         }
-        .tear-hint .arrow {
+        .tear-hint-below .arrow {
             display: inline-block;
-            animation: tearSlide 1.5s ease-in-out infinite;
+            animation: tearBob 1.5s ease-in-out infinite;
+            margin-left: 0.15em;
         }
         @keyframes tearPulse {
-            0%, 100% { opacity: 0.5; }
+            0%, 100% { opacity: 0.4; }
             50% { opacity: 1; }
         }
-        @keyframes tearSlide {
-            0%, 100% { transform: translateX(0); }
-            50% { transform: translateX(5px); }
+        @keyframes tearBob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(4px); }
         }
 
-        /* Pulsing seam on welcome screen */
+        /* Dotted seam on welcome screen */
         #screen-welcome .bp-seam {
-            animation: seamPulse 2s ease-in-out infinite;
-        }
-        @keyframes seamPulse {
-            0%, 100% { border-color: rgba(0,0,0,0.12); }
-            50% { border-color: rgba(236, 72, 153, 0.4); }
+            border-right: none;
+            width: 3px;
+            background:
+                radial-gradient(circle, rgba(0,0,0,0.18) 1.5px, transparent 1.5px);
+            background-size: 3px 10px;
         }
 
         /* ==================== SCREEN 2: CHECK-IN ==================== */
@@ -959,6 +992,11 @@
                 <div class="bp-cutout bp-cutout-top"></div>
                 <div class="bp-cutout bp-cutout-bottom"></div>
                 <div class="bp-seam"></div>
+                <!-- Tear interaction zone -->
+                <div class="tear-track" id="tear-track">
+                    <div class="tear-progress" id="tear-progress"></div>
+                    <div class="tear-indicator" id="tear-indicator"></div>
+                </div>
 
                 <div class="bp-main">
                     <div class="bp-main-top">
@@ -1003,7 +1041,7 @@
                     </div>
                 </div>
 
-                <div class="bp-stub tearable" id="welcome-stub">
+                <div class="bp-stub" id="welcome-stub">
                     <div class="bp-stub-title">Boarding Pass</div>
                     <div class="bp-stub-route">
                         <div>
@@ -1044,9 +1082,9 @@
                         </div>
                     </div>
                     <div class="bp-barcode"></div>
-                    <div class="tear-hint">Tear to board <span class="arrow">→</span></div>
                 </div>
             </div>
+            <div class="tear-hint-below">Swipe down the dotted line to tear your boarding pass <span class="arrow">↓</span></div>
         </div>
     </div>
 
@@ -1289,57 +1327,71 @@
 
         /* ==================== TEAR-OFF MECHANIC ==================== */
         (function initTear() {
+            const track = document.getElementById('tear-track');
+            const progress = document.getElementById('tear-progress');
+            const indicator = document.getElementById('tear-indicator');
             const stub = document.getElementById('welcome-stub');
-            if (!stub) return;
+            if (!track || !stub) return;
 
-            let dragging = false;
-            let startX = 0;
-            let dx = 0;
-            const TEAR_THRESHOLD = 80;
+            let tearing = false;
+            let torn = false;
+            let trackRect = null;
 
-            function getX(e) {
-                return e.touches ? e.touches[0].clientX : e.clientX;
+            function getY(e) {
+                return e.touches ? e.touches[0].clientY : e.clientY;
             }
 
             function onStart(e) {
-                dragging = true;
-                startX = getX(e);
-                dx = 0;
-                stub.classList.remove('snapping');
-                stub.style.transition = 'none';
+                if (torn) return;
+                tearing = true;
+                trackRect = track.getBoundingClientRect();
+                indicator.classList.add('visible');
+                progress.style.transition = 'none';
+                onMove(e);
             }
 
             function onMove(e) {
-                if (!dragging) return;
+                if (!tearing || !trackRect) return;
                 e.preventDefault();
-                dx = Math.max(0, getX(e) - startX);
-                const rotate = dx * 0.04;
-                const opacity = Math.max(0, 1 - dx / 250);
-                stub.style.transform = `translateX(${dx}px) rotate(${rotate}deg)`;
-                stub.style.opacity = opacity;
+
+                const y = getY(e);
+                const rel = Math.max(0, Math.min(1, (y - trackRect.top) / trackRect.height));
+
+                progress.style.height = (rel * 100) + '%';
+                indicator.style.top = (rel * 100) + '%';
+
+                if (rel >= 0.85) {
+                    completeTear();
+                }
             }
 
             function onEnd() {
-                if (!dragging) return;
-                dragging = false;
-
-                if (dx >= TEAR_THRESHOLD) {
-                    // Torn off!
-                    stub.classList.add('torn');
-                    stub.style.transform = '';
-                    stub.style.opacity = '';
-                    setTimeout(() => goToScreen('screen-checkin'), 500);
-                } else {
-                    // Snap back
-                    stub.classList.add('snapping');
-                    stub.style.transform = 'translateX(0) rotate(0deg)';
-                    stub.style.opacity = '1';
-                }
-                dx = 0;
+                if (!tearing || torn) return;
+                tearing = false;
+                indicator.classList.remove('visible');
+                // Snap back
+                progress.style.transition = 'height 0.35s ease-out';
+                progress.style.height = '0';
+                indicator.style.top = '0';
+                setTimeout(() => { progress.style.transition = 'none'; }, 350);
             }
 
-            stub.addEventListener('mousedown', onStart);
-            stub.addEventListener('touchstart', onStart, { passive: true });
+            function completeTear() {
+                tearing = false;
+                torn = true;
+                indicator.classList.remove('visible');
+                // Fill the line fully
+                progress.style.transition = 'height 0.15s ease-out';
+                progress.style.height = '100%';
+                // Tear the stub off
+                setTimeout(() => {
+                    stub.classList.add('torn');
+                    setTimeout(() => goToScreen('screen-checkin'), 550);
+                }, 150);
+            }
+
+            track.addEventListener('mousedown', onStart);
+            track.addEventListener('touchstart', onStart, { passive: false });
             document.addEventListener('mousemove', onMove);
             document.addEventListener('touchmove', onMove, { passive: false });
             document.addEventListener('mouseup', onEnd);
