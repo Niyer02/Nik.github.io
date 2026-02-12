@@ -254,6 +254,37 @@
             color: var(--red);
             animation: shake 0.5s ease;
         }
+        .photo-reveal {
+            opacity: 0;
+            visibility: hidden;
+            max-height: 0;
+            transition: opacity 0.6s ease, visibility 0.6s ease, max-height 0.6s ease;
+            margin-top: 1.5rem;
+            text-align: center;
+            overflow: hidden;
+        }
+        .photo-reveal.visible {
+            opacity: 1;
+            visibility: visible;
+            max-height: 600px;
+        }
+        .reveal-photo {
+            width: 100%;
+            max-width: 340px;
+            border-radius: 12px;
+            border: 2px solid rgba(245, 158, 11, 0.3);
+            margin-bottom: 1rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+        .reveal-caption {
+            font-family: var(--font-mono);
+            font-size: clamp(0.8rem, 2.2vw, 0.95rem);
+            color: var(--gold);
+            line-height: 1.6;
+            margin-bottom: 1.25rem;
+            padding: 0 0.5rem;
+        }
+
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             15% { transform: translateX(-8px); }
@@ -435,117 +466,255 @@
 
         /* ==================== SCREEN 5: BOARDING PASS ==================== */
         #screen-boarding .boarding-container {
-            max-width: 500px;
+            max-width: 760px;
             width: 100%;
             text-align: center;
         }
-        .final-pass {
-            background: var(--bg-panel);
-            border: 1px solid rgba(245, 158, 11, 0.25);
-            border-radius: 12px;
+
+        /* -- The pass itself -- */
+        .bp {
+            display: flex;
+            border-radius: 16px;
             overflow: hidden;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+            text-align: left;
             position: relative;
         }
-        .final-pass-header {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(236, 72, 153, 0.1));
-            padding: clamp(0.75rem, 2.5vw, 1.25rem);
+
+        /* -- Main (left) section -- */
+        .bp-main {
+            flex: 2;
+            background:
+                radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px),
+                linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+            background-size: 14px 14px, 100% 100%;
+            padding: clamp(1.1rem, 3vw, 1.75rem);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bp-main-top {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            align-items: flex-start;
         }
-        .airline-name {
+
+        .bp-lbl {
+            font-family: var(--font-body);
+            font-size: clamp(0.6rem, 1.5vw, 0.75rem);
+            color: rgba(255,255,255,0.7);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .bp-code {
             font-family: var(--font-mono);
-            font-size: clamp(0.7rem, 2vw, 0.85rem);
-            color: var(--gold);
-            letter-spacing: 0.2em;
+            font-size: clamp(1.8rem, 5.5vw, 3.2rem);
+            color: #fff;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+        .bp-city {
+            font-family: var(--font-body);
+            font-size: clamp(0.6rem, 1.6vw, 0.85rem);
+            color: #fff;
+            font-weight: 600;
             text-transform: uppercase;
         }
-        .flight-number {
-            font-family: var(--font-mono);
-            font-size: clamp(0.85rem, 2.5vw, 1.1rem);
-            color: var(--text);
+        .bp-datetime {
+            font-family: var(--font-body);
+            font-size: clamp(0.6rem, 1.4vw, 0.78rem);
+            color: rgba(255,255,255,0.8);
+            margin-top: 0.35rem;
+            line-height: 1.4;
         }
-        .final-pass-body {
-            padding: clamp(1rem, 3vw, 1.5rem);
-        }
-        .route-display {
+
+        .bp-plane-area {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: clamp(0.75rem, 3vw, 1.5rem);
-            margin-bottom: 1.25rem;
+            padding: 0.5rem;
+            gap: 0.2rem;
+            flex-shrink: 0;
         }
-        .route-point {
-            text-align: center;
+        .bp-plane-icon {
+            width: clamp(32px, 7vw, 56px);
+            height: clamp(32px, 7vw, 56px);
+            fill: rgba(255,255,255,0.85);
+            transform: rotate(45deg);
         }
-        .route-code {
+        .bp-arrow {
+            color: rgba(0,0,0,0.35);
+            font-size: clamp(1rem, 2.5vw, 1.4rem);
+            line-height: 1;
+        }
+
+        .bp-main-bottom {
+            display: flex;
+            gap: clamp(0.6rem, 2.5vw, 1.5rem);
+            flex-wrap: wrap;
+            margin-top: 1.25rem;
+            padding-top: 0.9rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+        .bp-field-lbl {
+            font-family: var(--font-body);
+            font-size: clamp(0.5rem, 1.2vw, 0.65rem);
+            color: rgba(255,255,255,0.6);
+            text-transform: capitalize;
+        }
+        .bp-field-val {
             font-family: var(--font-mono);
-            font-size: clamp(1.5rem, 5vw, 2.25rem);
-            color: var(--text);
+            font-size: clamp(0.7rem, 2vw, 0.95rem);
+            color: #fff;
             font-weight: 700;
         }
-        .route-name {
-            font-family: var(--font-mono);
-            font-size: clamp(0.55rem, 1.6vw, 0.7rem);
-            color: var(--text-muted);
-            letter-spacing: 0.1em;
-            margin-top: 0.25rem;
-        }
-        .route-arrow {
-            font-size: clamp(1.2rem, 4vw, 1.8rem);
-            color: var(--pink);
-        }
 
-        .pass-details {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.75rem;
-            padding-top: 1rem;
-            border-top: 1px dashed rgba(255, 255, 255, 0.1);
-            position: relative;
-        }
-        .pass-details::before,
-        .pass-details::after {
-            content: '';
+        /* -- Divider seam with cutouts -- */
+        .bp-seam {
             position: absolute;
-            width: 20px;
-            height: 20px;
+            top: 0;
+            bottom: 0;
+            right: 35%;
+            width: 0;
+            border-right: 2px dashed rgba(0,0,0,0.12);
+            z-index: 3;
+        }
+        .bp-cutout {
+            position: absolute;
+            width: 24px;
+            height: 24px;
             background: var(--bg-dark);
             border-radius: 50%;
-            top: -10px;
+            z-index: 4;
+            /* Horizontally centered on the seam */
+            right: calc(35% - 12px);
         }
-        .pass-details::before { left: -10px; }
-        .pass-details::after { right: -10px; }
+        .bp-cutout-top { top: -12px; }
+        .bp-cutout-bottom { bottom: -12px; }
 
-        .pass-field .value {
+        /* -- Stub (right) section -- */
+        .bp-stub {
+            flex: 1;
+            background: #f1f0eb;
+            padding: clamp(0.8rem, 2.5vw, 1.5rem);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        /* Watermark plane on stub */
+        .bp-stub::before {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%) rotate(45deg);
+            opacity: 0.06;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z'/%3E%3C/svg%3E") no-repeat center/contain;
+            pointer-events: none;
+        }
+
+        .bp-stub-title {
             font-family: var(--font-mono);
-            font-size: clamp(0.9rem, 2.8vw, 1.15rem);
-            color: var(--text);
-            font-weight: 600;
+            font-size: clamp(0.65rem, 1.8vw, 0.85rem);
+            color: #111;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            text-align: center;
         }
-        .pass-field .label {
-            margin-top: 0.2rem;
+        .bp-stub-route {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.3rem 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .bp-stub .bp-s-lbl {
+            font-family: var(--font-body);
+            font-size: clamp(0.5rem, 1.2vw, 0.6rem);
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .bp-stub .bp-s-code {
+            font-family: var(--font-mono);
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: var(--pink);
+            font-weight: 700;
+            line-height: 1.1;
+        }
+        .bp-stub .bp-s-city {
+            font-family: var(--font-body);
+            font-size: clamp(0.45rem, 1.1vw, 0.58rem);
+            color: var(--pink);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .bp-stub .bp-s-date {
+            font-family: var(--font-body);
+            font-size: clamp(0.45rem, 1vw, 0.55rem);
+            color: #555;
+            margin-top: 0.15rem;
+            line-height: 1.3;
+        }
+        .bp-stub-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.25rem 0.5rem;
+            margin-top: 0.4rem;
+            padding-top: 0.4rem;
+            border-top: 1px solid #ddd;
+        }
+        .bp-stub-details .bp-sd-lbl {
+            font-family: var(--font-body);
+            font-size: clamp(0.45rem, 1vw, 0.55rem);
+            color: #888;
+        }
+        .bp-stub-details .bp-sd-val {
+            font-family: var(--font-mono);
+            font-size: clamp(0.6rem, 1.5vw, 0.78rem);
+            color: var(--pink);
+            font-weight: 700;
+        }
+        .bp-stub-row3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.25rem;
+            margin-top: 0.25rem;
         }
 
-        .pass-barcode {
-            height: 30px;
-            margin-top: 1.25rem;
+        .bp-barcode {
+            height: clamp(36px, 6vw, 50px);
+            margin-top: auto;
+            padding-top: 0.6rem;
             background: repeating-linear-gradient(
                 90deg,
-                rgba(255,255,255,0.5) 0px, rgba(255,255,255,0.5) 1.5px,
-                transparent 1.5px, transparent 3.5px,
-                rgba(255,255,255,0.5) 3.5px, rgba(255,255,255,0.5) 5px,
-                transparent 5px, transparent 6.5px,
-                rgba(255,255,255,0.5) 6.5px, rgba(255,255,255,0.5) 7px,
-                transparent 7px, transparent 9.5px,
-                rgba(255,255,255,0.5) 9.5px, rgba(255,255,255,0.5) 12px,
-                transparent 12px, transparent 14px
+                #111 0px, #111 2px,
+                transparent 2px, transparent 4.5px,
+                #111 4.5px, #111 5.5px,
+                transparent 5.5px, transparent 7px,
+                #111 7px, #111 8px,
+                transparent 8px, transparent 10.5px,
+                #111 10.5px, #111 13px,
+                transparent 13px, transparent 14.5px,
+                #111 14.5px, #111 15.5px,
+                transparent 15.5px, transparent 18px
             );
-            opacity: 0.25;
+            background-size: 18px 100%;
+            background-position: center;
             border-radius: 2px;
+            opacity: 0.85;
         }
 
+        /* -- Question + buttons below pass -- */
         .valentine-question {
             font-family: var(--font-mono);
             font-size: clamp(1.1rem, 3.5vw, 1.6rem);
@@ -592,6 +761,47 @@
             border-radius: 8px;
             transition: transform 0.15s ease;
             min-height: 48px;
+        }
+
+        /* -- Boarding pass responsive -- */
+        @media (max-width: 540px) {
+            .bp { flex-direction: column; }
+            .bp-seam {
+                top: auto;
+                bottom: auto;
+                left: 0;
+                right: 0;
+                width: auto;
+                height: 0;
+                border-right: none;
+                border-bottom: 2px dashed rgba(0,0,0,0.12);
+                /* position it between main and stub */
+                position: relative;
+            }
+            .bp-cutout {
+                right: auto;
+                top: auto;
+                bottom: auto;
+            }
+            .bp-cutout-top {
+                position: absolute;
+                left: -12px;
+                top: auto;
+                bottom: auto;
+                /* re-positioned by parent flow */
+            }
+            .bp-cutout-bottom {
+                position: absolute;
+                right: -12px;
+                top: auto;
+                bottom: auto;
+            }
+            .bp-stub-route {
+                gap: 0.3rem 1rem;
+            }
+            .bp-stub-row3 {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
         }
 
         /* ==================== SCREEN 6: YES CELEBRATION ==================== */
@@ -722,13 +932,6 @@
             .departures-row {
                 grid-template-columns: 1fr 1.6fr 0.6fr 1.2fr;
             }
-            .route-display {
-                gap: 0.5rem;
-            }
-            .pass-details {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 0.5rem;
-            }
             .answer-buttons {
                 flex-direction: column;
                 align-items: center;
@@ -768,13 +971,18 @@
                 </div>
             </div>
             <div class="quiz-section" id="quiz-section">
-                <div class="quiz-question">How did our bioluminescent ocean adventure start?</div>
+                <div class="quiz-question">Where was our FIRST VACATION EVER?</div>
                 <div class="quiz-options">
-                    <button class="quiz-option" onclick="handleQuizAnswer(this, false)">Nik surprised Kat with the trip</button>
-                    <button class="quiz-option" onclick="handleQuizAnswer(this, false)">They found it completely by accident</button>
-                    <button class="quiz-option" onclick="handleQuizAnswer(this, true)">Kat convinced Nik to go</button>
-                    <button class="quiz-option" onclick="handleQuizAnswer(this, false)">A friend recommended it to them</button>
+                    <button class="quiz-option" onclick="handleQuizAnswer(this, true)">Costa Rica</button>
+                    <button class="quiz-option" onclick="handleQuizAnswer(this, false)">New York</button>
+                    <button class="quiz-option" onclick="handleQuizAnswer(this, false)">India</button>
+                    <button class="quiz-option" onclick="handleQuizAnswer(this, false)">Italy</button>
                 </div>
+            </div>
+            <div class="photo-reveal" id="photo-reveal">
+                <img src="211e21eb-63ff-4ed3-8ded-5521243b9701.jfif" alt="Nik and Kat in Costa Rica" class="reveal-photo">
+                <div class="reveal-caption">Nik's favourite trip on record. Boarding pass stamped, heart claimed, no refunds.</div>
+                <button class="btn" onclick="goToScreen('screen-security')">Continue to Security</button>
             </div>
         </div>
     </div>
@@ -852,38 +1060,98 @@
     <!-- ==================== SCREEN 5: BOARDING PASS / QUESTION ==================== -->
     <div id="screen-boarding" class="screen">
         <div class="boarding-container">
-            <div class="final-pass">
-                <div class="final-pass-header">
-                    <span class="airline-name">Love Airlines</span>
-                    <span class="flight-number">FL 214</span>
+            <div class="bp">
+                <!-- Cutout circles at the seam -->
+                <div class="bp-cutout bp-cutout-top"></div>
+                <div class="bp-cutout bp-cutout-bottom"></div>
+                <div class="bp-seam"></div>
+
+                <!-- Main (left) section -->
+                <div class="bp-main">
+                    <div class="bp-main-top">
+                        <div class="bp-endpoint">
+                            <div class="bp-lbl">From:</div>
+                            <div class="bp-code">SGL</div>
+                            <div class="bp-city">Single Life</div>
+                            <div class="bp-datetime">Feb 14, 2026<br>Departure</div>
+                        </div>
+                        <div class="bp-plane-area">
+                            <svg class="bp-plane-icon" viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+                            <div class="bp-arrow">&#10132;</div>
+                        </div>
+                        <div class="bp-endpoint" style="text-align:right">
+                            <div class="bp-lbl">To:</div>
+                            <div class="bp-code">VLD</div>
+                            <div class="bp-city">Valentine's Day</div>
+                            <div class="bp-datetime">Feb 14, 2026<br>Forever</div>
+                        </div>
+                    </div>
+                    <div class="bp-main-bottom">
+                        <div class="bp-field">
+                            <div class="bp-field-lbl">Passenger</div>
+                            <div class="bp-field-val">KAT</div>
+                        </div>
+                        <div class="bp-field">
+                            <div class="bp-field-lbl">Flight</div>
+                            <div class="bp-field-val">FL 214</div>
+                        </div>
+                        <div class="bp-field">
+                            <div class="bp-field-lbl">Seat</div>
+                            <div class="bp-field-val">NIK+KAT</div>
+                        </div>
+                        <div class="bp-field">
+                            <div class="bp-field-lbl">Gate</div>
+                            <div class="bp-field-val">14</div>
+                        </div>
+                        <div class="bp-field">
+                            <div class="bp-field-lbl">Terminal</div>
+                            <div class="bp-field-val">LOVE</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="final-pass-body">
-                    <div class="route-display">
-                        <div class="route-point">
-                            <div class="route-code">SGL</div>
-                            <div class="route-name">Single Life</div>
+
+                <!-- Stub (right) section -->
+                <div class="bp-stub">
+                    <div class="bp-stub-title">Boarding Pass</div>
+                    <div class="bp-stub-route">
+                        <div>
+                            <div class="bp-s-lbl">From:</div>
+                            <div class="bp-s-code">SGL</div>
+                            <div class="bp-s-city">Single Life</div>
+                            <div class="bp-s-date">Feb 14, 2026<br>Departure</div>
                         </div>
-                        <div class="route-arrow">✈</div>
-                        <div class="route-point">
-                            <div class="route-code">VLD</div>
-                            <div class="route-name">Valentine's Day</div>
-                        </div>
-                    </div>
-                    <div class="pass-details">
-                        <div class="pass-field">
-                            <div class="value">FEB 14</div>
-                            <div class="label">Date</div>
-                        </div>
-                        <div class="pass-field">
-                            <div class="value">14</div>
-                            <div class="label">Gate</div>
-                        </div>
-                        <div class="pass-field">
-                            <div class="value">NEXT TO NIK</div>
-                            <div class="label">Seat</div>
+                        <div>
+                            <div class="bp-s-lbl">To:</div>
+                            <div class="bp-s-code">VLD</div>
+                            <div class="bp-s-city">Valentine's</div>
+                            <div class="bp-s-date">Feb 14, 2026<br>Forever</div>
                         </div>
                     </div>
-                    <div class="pass-barcode"></div>
+                    <div class="bp-stub-details">
+                        <div>
+                            <div class="bp-sd-lbl">Passenger</div>
+                            <div class="bp-sd-val">KAT</div>
+                        </div>
+                        <div>
+                            <div class="bp-sd-lbl">Flight</div>
+                            <div class="bp-sd-val">FL 214</div>
+                        </div>
+                    </div>
+                    <div class="bp-stub-row3">
+                        <div>
+                            <div class="bp-sd-lbl">Seat</div>
+                            <div class="bp-sd-val">NIK+KAT</div>
+                        </div>
+                        <div>
+                            <div class="bp-sd-lbl">Gate</div>
+                            <div class="bp-sd-val">14</div>
+                        </div>
+                        <div>
+                            <div class="bp-sd-lbl">Terminal</div>
+                            <div class="bp-sd-val">LOVE</div>
+                        </div>
+                    </div>
+                    <div class="bp-barcode"></div>
                 </div>
             </div>
 
@@ -1004,9 +1272,11 @@
             if (isCorrect) {
                 quizAnswered = true;
                 btn.classList.add('correct');
-                // Disable all options
                 document.querySelectorAll('.quiz-option').forEach(o => o.style.pointerEvents = 'none');
-                setTimeout(() => goToScreen('screen-security'), 1000);
+                setTimeout(() => {
+                    document.getElementById('quiz-section').style.display = 'none';
+                    document.getElementById('photo-reveal').classList.add('visible');
+                }, 800);
             } else {
                 btn.classList.add('wrong');
                 btn.style.pointerEvents = 'none';
