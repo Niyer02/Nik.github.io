@@ -913,9 +913,11 @@
             80% { transform: translate(3px, -2px) skewX(0.3deg); }
             100% { transform: translate(0, 0) skewX(0deg); }
         }
-        .glitch-emoji {
-            font-size: clamp(2.5rem, 8vw, 4rem);
+        .glitch-echo-img {
+            width: clamp(80px, 22vw, 140px);
+            border-radius: 50%;
             margin-bottom: 1rem;
+            filter: grayscale(0.3);
         }
         .glitch-subtext {
             font-family: var(--font-mono);
@@ -1310,7 +1312,7 @@
     <!-- ==================== SCREEN 7: NO / GLITCH ==================== -->
     <div id="screen-no" class="screen">
         <div class="glitch-container">
-            <div class="glitch-emoji">🐶</div>
+            <img src="8ffa3995-fb1d-4922-84d9-9fe03a15808f-removebg-preview.png" alt="Echo is not happy" class="glitch-echo-img">
             <div class="glitch-text">SYSTEM ERROR</div>
             <div class="glitch-subtext">Invalid response detected. Echo is not happy.</div>
             <div class="glitch-redirect">Redirecting to correct answer...</div>
