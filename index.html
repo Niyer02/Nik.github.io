@@ -2,162 +2,1197 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nikhil Iyer - Personal Website</title>
+    <title>Flight 214 — Now Boarding</title>
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Flight 214 — Now Boarding">
+    <meta property="og:description" content="You've been cleared for boarding. Valentine's Day 2026.">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#0a1628">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
     <style>
-        @import url('https://fonts.googleapis.com/css?family=Open+Sans');
+        /* ==================== RESET & BASE ==================== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg-dark: #0a1628;
+            --bg-panel: #132042;
+            --gold: #f59e0b;
+            --pink: #ec4899;
+            --red: #e11d48;
+            --green: #22c55e;
+            --blue: #3b82f6;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --font-mono: 'Share Tech Mono', monospace;
+            --font-body: 'Inter', sans-serif;
+            --transition-speed: 0.6s;
+        }
 
         html, body {
-            margin: 0;
-            padding: 0;
-            position: 0;
+            height: 100%;
+            overflow: hidden;
+            background: var(--bg-dark);
+            color: var(--text);
+            font-family: var(--font-body);
         }
 
-        body {
-            font-family: 'Open Sans', sans-serif;
-            font-size: 16px;
-            background: #fff;
-            overflow-x: hidden;
-        }
-
-        .sidebar {
+        /* ==================== SCREEN SYSTEM ==================== */
+        .screen {
             position: fixed;
-            width: 15%;
-            height: 100vh;
-            background: #1e1c1c;
-            font-size: 0.65em;
-            top: 0;
-            left: 0;
-            padding-top: 20px;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: clamp(1rem, 4vw, 2.5rem);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--transition-speed) ease, visibility var(--transition-speed) ease;
+            z-index: 1;
+        }
+        .screen.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 10;
         }
 
-        .nav {
-            text-align: right;
-            font-weight: bold;
-        }
-
-        .nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            margin-top: 20%;
-        }
-
-        .nav ul li {
-            position: relative;
-            margin: 3.2em 0;
-        }
-
-        .nav ul li a {
-            line-height: 5em;
+        /* ==================== SHARED COMPONENTS ==================== */
+        .btn {
+            font-family: var(--font-mono);
+            font-size: clamp(0.875rem, 2.5vw, 1.125rem);
+            padding: 0.875rem 2.5rem;
+            border: 2px solid var(--gold);
+            background: transparent;
+            color: var(--gold);
+            cursor: pointer;
             text-transform: uppercase;
-            text-decoration: none;
-            letter-spacing: 0.4em;
-            color: #FFF;
-            display: block;
-            transition: all ease-out 300ms;
-            margin-right: 10%;
+            letter-spacing: 0.15em;
+            transition: all 0.3s ease;
+            min-height: 48px;
+            min-width: 48px;
+        }
+        .btn:hover {
+            background: var(--gold);
+            color: var(--bg-dark);
+        }
+        .btn:active {
+            transform: scale(0.97);
         }
 
-        .nav ul li::after {
+        .mono { font-family: var(--font-mono); }
+        .label {
+            font-family: var(--font-mono);
+            font-size: clamp(0.625rem, 1.8vw, 0.75rem);
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+        }
+
+        /* ==================== SCREEN 1: WELCOME ==================== */
+        #screen-welcome .boarding-card {
+            background: var(--bg-panel);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 12px;
+            padding: clamp(1.5rem, 5vw, 3rem);
+            max-width: 460px;
+            width: 100%;
+            text-align: center;
+            animation: cardEntrance 0.8s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+        #screen-welcome .boarding-card::before {
             content: '';
             position: absolute;
-            width: 100%;
-            height: 0.2em;
-            background: black;
+            top: 0;
             left: 0;
-            bottom: 0;
-            background-image: linear-gradient(to right, #3f55a5, #61c5b1);
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gold), var(--pink), var(--gold));
         }
-
-        a img {
-            width: 48px;
-            height: 48px;
-        }
-
-        a { color:#000 }
-
-        a:visited { text-decoration: none; color:#000; }
-        a:hover { text-decoration: none; color:#00BFA6; }
-        a:focus { text-decoration: none; color:#00BFA6; }
-
-        p {
+        .welcome-overline {
+            font-family: var(--font-mono);
+            font-size: clamp(0.7rem, 2vw, 0.8rem);
+            color: var(--text-muted);
+            letter-spacing: 0.3em;
             text-transform: uppercase;
-            font-size: 1em;
-            letter-spacing: 0.1em;
-            color: #fff;
-            font-weight: bold;
-            margin-top: 20px;
+            margin-bottom: 0.5rem;
         }
-
-        .profile-pic {
+        .welcome-flight {
+            font-family: var(--font-mono);
+            font-size: clamp(2rem, 7vw, 3.5rem);
+            color: var(--gold);
+            font-weight: 700;
+            line-height: 1.1;
+        }
+        .welcome-flight span {
+            font-size: clamp(1rem, 3.5vw, 1.5rem);
             display: block;
-            margin: 0 auto;
-            border-radius: 50%;
-            width: 85%;
-            height: 25%;
+            color: var(--text);
+            margin-top: 0.25rem;
         }
-
-        .introduction {
-            margin-left: 20%;
-            padding: 20px;
-            display: flex;
+        .welcome-passenger {
+            margin: 1.5rem 0;
+            padding: 1rem 0;
+            border-top: 1px dashed rgba(255,255,255,0.1);
+            border-bottom: 1px dashed rgba(255,255,255,0.1);
         }
-
-        .intro-image {
-            width: 40%;
-            margin-left: 20px;
-        }
-
-        .intro-text {
-            flex-grow: 1;
-        }
-
-        .short-intro {
-            text-transform: uppercase;
-            font-size: 1em;
+        .welcome-passenger .name {
+            font-family: var(--font-mono);
+            font-size: clamp(1.5rem, 5vw, 2.25rem);
+            color: var(--pink);
             letter-spacing: 0.1em;
-            color: #000;
-            font-weight: bold;
-            margin-top: 0;
-            line-height: 2;
+        }
+        .welcome-barcode {
+            height: 36px;
+            margin: 1.25rem auto;
+            max-width: 200px;
+            background: repeating-linear-gradient(
+                90deg,
+                var(--text) 0px, var(--text) 2px,
+                transparent 2px, transparent 5px,
+                var(--text) 5px, var(--text) 6px,
+                transparent 6px, transparent 8px,
+                var(--text) 8px, var(--text) 11px,
+                transparent 11px, transparent 13px,
+                var(--text) 13px, var(--text) 14px,
+                transparent 14px, transparent 17px,
+                var(--text) 17px, var(--text) 20px,
+                transparent 20px, transparent 22px
+            );
+            opacity: 0.3;
         }
 
-        h2, h3 {
-            margin: 0;
-            padding: 0;
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(30px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* ==================== SCREEN 2: CHECK-IN ==================== */
+        #screen-checkin .checkin-container {
+            max-width: 580px;
+            width: 100%;
+            text-align: center;
+        }
+        .announcement-box {
+            background: var(--bg-panel);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 8px;
+            padding: clamp(1rem, 3vw, 1.5rem);
+            margin-bottom: 2rem;
+            min-height: 3.5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .announcement-text {
+            font-family: var(--font-mono);
+            font-size: clamp(0.85rem, 2.5vw, 1.05rem);
+            color: var(--gold);
+            line-height: 1.6;
+        }
+        .announcement-text .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.1em;
+            background: var(--gold);
+            margin-left: 2px;
+            vertical-align: text-bottom;
+            animation: blink 0.7s step-end infinite;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        .quiz-section {
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .quiz-section.visible { opacity: 1; }
+
+        .quiz-question {
+            font-size: clamp(0.95rem, 2.8vw, 1.15rem);
+            margin-bottom: 1.25rem;
+            color: var(--text);
+        }
+        .quiz-options {
+            display: grid;
+            gap: 0.75rem;
+        }
+        .quiz-option {
+            font-family: var(--font-mono);
+            font-size: clamp(0.8rem, 2.2vw, 0.95rem);
+            padding: 0.875rem 1.25rem;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            min-height: 48px;
+        }
+        .quiz-option:hover {
+            border-color: var(--gold);
+            background: rgba(245, 158, 11, 0.08);
+        }
+        .quiz-option.correct {
+            border-color: var(--green);
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--green);
+        }
+        .quiz-option.wrong {
+            border-color: var(--red);
+            background: rgba(225, 29, 72, 0.15);
+            color: var(--red);
+            animation: shake 0.5s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            15% { transform: translateX(-8px); }
+            30% { transform: translateX(8px); }
+            45% { transform: translateX(-6px); }
+            60% { transform: translateX(6px); }
+            75% { transform: translateX(-3px); }
+            90% { transform: translateX(3px); }
+        }
+
+        /* ==================== SCREEN 3: SECURITY ==================== */
+        #screen-security .security-container {
+            max-width: 520px;
+            width: 100%;
+            text-align: center;
+        }
+        .security-title {
+            font-family: var(--font-mono);
+            font-size: clamp(1.2rem, 4vw, 1.75rem);
+            color: var(--blue);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+        }
+        .security-items { display: grid; gap: 1rem; }
+        .security-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: var(--bg-panel);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .security-item.visible { opacity: 1; }
+        .security-item .scan-line {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.15), transparent);
+            transition: none;
+        }
+        .security-item.scanning .scan-line {
+            animation: scanSweep 1.5s ease-in-out;
+        }
+        @keyframes scanSweep {
+            from { left: -100%; }
+            to { left: 100%; }
+        }
+
+        .security-item .item-text {
+            flex: 1;
+            font-family: var(--font-mono);
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            text-align: left;
+        }
+        .security-item .item-status {
+            font-size: 1.3rem;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .security-item .item-status.show {
+            opacity: 1;
+        }
+        .security-item .item-status.cleared { color: var(--green); }
+        .security-item .item-status.failed { color: var(--red); }
+
+        .confiscated-stamp {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg) scale(0);
+            font-family: var(--font-mono);
+            font-size: clamp(1rem, 3.5vw, 1.4rem);
+            color: var(--red);
+            border: 3px solid var(--red);
+            padding: 0.3rem 1rem;
+            letter-spacing: 0.15em;
+            font-weight: 700;
+            text-transform: uppercase;
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+            white-space: nowrap;
+        }
+        .confiscated-stamp.show {
+            transform: translate(-50%, -50%) rotate(-15deg) scale(1);
+            opacity: 1;
+        }
+
+        /* ==================== SCREEN 4: DEPARTURE BOARD ==================== */
+        #screen-departures .departures-container {
+            max-width: 680px;
+            width: 100%;
+            text-align: center;
+        }
+        .departures-title {
+            font-family: var(--font-mono);
+            font-size: clamp(1rem, 3.5vw, 1.5rem);
+            color: var(--gold);
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        }
+        .departures-board {
+            background: #0d0d0d;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .departures-header,
+        .departures-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr 0.8fr 1.5fr;
+            gap: 0;
+        }
+        .departures-header {
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .departures-header .cell {
+            font-family: var(--font-mono);
+            font-size: clamp(0.6rem, 1.8vw, 0.75rem);
+            color: var(--text-muted);
+            padding: 0.6rem 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            text-align: left;
+        }
+        .departures-row {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .departures-row .cell {
+            font-family: var(--font-mono);
+            font-size: clamp(0.75rem, 2.2vw, 1rem);
+            color: var(--text);
+            padding: 0.75rem;
+            text-align: left;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        .departures-row.highlight {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        .departures-row.highlight .cell {
+            color: var(--gold);
+        }
+        .status-badge {
+            display: inline-block;
+            font-size: clamp(0.6rem, 1.8vw, 0.75rem);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            letter-spacing: 0.05em;
+        }
+        .status-departed { background: rgba(255,255,255,0.08); color: var(--text-muted); }
+        .status-ontime { background: rgba(34,197,94,0.15); color: var(--green); }
+        .status-delayed { background: rgba(245,158,11,0.15); color: var(--gold); }
+        .status-boarding {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--gold);
+            animation: pulseBadge 1.5s ease-in-out infinite;
+        }
+        @keyframes pulseBadge {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        #screen-departures .btn {
+            margin-top: 2rem;
+            opacity: 0;
+            transition: opacity 0.5s ease, background 0.3s ease, color 0.3s ease;
+        }
+        #screen-departures .btn.visible { opacity: 1; }
+
+        /* ==================== SCREEN 5: BOARDING PASS ==================== */
+        #screen-boarding .boarding-container {
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        .final-pass {
+            background: var(--bg-panel);
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+        .final-pass-header {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(236, 72, 153, 0.1));
+            padding: clamp(0.75rem, 2.5vw, 1.25rem);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .airline-name {
+            font-family: var(--font-mono);
+            font-size: clamp(0.7rem, 2vw, 0.85rem);
+            color: var(--gold);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+        .flight-number {
+            font-family: var(--font-mono);
+            font-size: clamp(0.85rem, 2.5vw, 1.1rem);
+            color: var(--text);
+        }
+        .final-pass-body {
+            padding: clamp(1rem, 3vw, 1.5rem);
+        }
+        .route-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(0.75rem, 3vw, 1.5rem);
+            margin-bottom: 1.25rem;
+        }
+        .route-point {
+            text-align: center;
+        }
+        .route-code {
+            font-family: var(--font-mono);
+            font-size: clamp(1.5rem, 5vw, 2.25rem);
+            color: var(--text);
+            font-weight: 700;
+        }
+        .route-name {
+            font-family: var(--font-mono);
+            font-size: clamp(0.55rem, 1.6vw, 0.7rem);
+            color: var(--text-muted);
+            letter-spacing: 0.1em;
+            margin-top: 0.25rem;
+        }
+        .route-arrow {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            color: var(--pink);
+        }
+
+        .pass-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            padding-top: 1rem;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+        .pass-details::before,
+        .pass-details::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--bg-dark);
+            border-radius: 50%;
+            top: -10px;
+        }
+        .pass-details::before { left: -10px; }
+        .pass-details::after { right: -10px; }
+
+        .pass-field .value {
+            font-family: var(--font-mono);
+            font-size: clamp(0.9rem, 2.8vw, 1.15rem);
+            color: var(--text);
+            font-weight: 600;
+        }
+        .pass-field .label {
+            margin-top: 0.2rem;
+        }
+
+        .pass-barcode {
+            height: 30px;
+            margin-top: 1.25rem;
+            background: repeating-linear-gradient(
+                90deg,
+                rgba(255,255,255,0.5) 0px, rgba(255,255,255,0.5) 1.5px,
+                transparent 1.5px, transparent 3.5px,
+                rgba(255,255,255,0.5) 3.5px, rgba(255,255,255,0.5) 5px,
+                transparent 5px, transparent 6.5px,
+                rgba(255,255,255,0.5) 6.5px, rgba(255,255,255,0.5) 7px,
+                transparent 7px, transparent 9.5px,
+                rgba(255,255,255,0.5) 9.5px, rgba(255,255,255,0.5) 12px,
+                transparent 12px, transparent 14px
+            );
+            opacity: 0.25;
+            border-radius: 2px;
+        }
+
+        .valentine-question {
+            font-family: var(--font-mono);
+            font-size: clamp(1.1rem, 3.5vw, 1.6rem);
+            color: var(--pink);
+            margin: 1.75rem 0 1.25rem;
+            line-height: 1.4;
+        }
+        .answer-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-yes {
+            font-family: var(--font-mono);
+            font-size: clamp(1rem, 3vw, 1.25rem);
+            padding: 1rem 3rem;
+            border: 2px solid var(--pink);
+            background: var(--pink);
+            color: #fff;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 700;
+            min-height: 54px;
+        }
+        .btn-yes:hover {
+            background: #db2777;
+            border-color: #db2777;
+            transform: scale(1.05);
+        }
+        .btn-no {
+            font-family: var(--font-mono);
+            font-size: clamp(0.8rem, 2.2vw, 0.95rem);
+            padding: 0.75rem 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-radius: 8px;
+            transition: transform 0.15s ease;
+            min-height: 48px;
+        }
+
+        /* ==================== SCREEN 6: YES CELEBRATION ==================== */
+        #screen-yes .celebration-container {
+            text-align: center;
+            z-index: 20;
+        }
+        .celebration-emoji {
+            font-size: clamp(3rem, 10vw, 5rem);
+            animation: celebrationBounce 0.6s ease infinite alternate;
+        }
+        @keyframes celebrationBounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-15px); }
+        }
+        .celebration-title {
+            font-family: var(--font-mono);
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            color: var(--pink);
+            margin: 1rem 0 0.5rem;
+        }
+        .celebration-subtitle {
+            font-size: clamp(0.9rem, 2.5vw, 1.15rem);
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+        .echo-section {
+            margin-top: 1rem;
+        }
+        .echo-dog {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            display: inline-block;
+            animation: echoWag 0.4s ease-in-out infinite alternate;
+        }
+        @keyframes echoWag {
+            from { transform: rotate(-8deg); }
+            to { transform: rotate(8deg); }
+        }
+        .echo-text {
+            font-family: var(--font-mono);
+            font-size: clamp(0.85rem, 2.5vw, 1.05rem);
+            color: var(--gold);
+            margin-top: 0.5rem;
+            letter-spacing: 0.1em;
+        }
+
+        /* Confetti canvas */
+        #confetti-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 15;
+            pointer-events: none;
+        }
+
+        /* ==================== SCREEN 7: NO / GLITCH ==================== */
+        #screen-no .glitch-container {
+            text-align: center;
+        }
+        .glitch-text {
+            font-family: var(--font-mono);
+            font-size: clamp(1.3rem, 4.5vw, 2rem);
+            color: var(--red);
+            animation: glitchShake 0.15s linear infinite;
+            letter-spacing: 0.1em;
+        }
+        @keyframes glitchShake {
+            0% { transform: translate(0, 0) skewX(0deg); }
+            20% { transform: translate(-3px, 1px) skewX(-0.5deg); }
+            40% { transform: translate(2px, -1px) skewX(0.5deg); }
+            60% { transform: translate(-1px, 2px) skewX(-0.3deg); }
+            80% { transform: translate(3px, -2px) skewX(0.3deg); }
+            100% { transform: translate(0, 0) skewX(0deg); }
+        }
+        .glitch-emoji {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            margin-bottom: 1rem;
+        }
+        .glitch-subtext {
+            font-family: var(--font-mono);
+            font-size: clamp(0.75rem, 2vw, 0.9rem);
+            color: var(--text-muted);
+            margin-top: 1rem;
+            letter-spacing: 0.05em;
+        }
+        .glitch-redirect {
+            font-family: var(--font-mono);
+            font-size: clamp(0.65rem, 1.5vw, 0.8rem);
+            color: var(--text-muted);
+            margin-top: 1.5rem;
+            opacity: 0.6;
+        }
+
+        /* CRT scanline overlay for glitch screen */
+        #screen-no::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.15) 2px,
+                rgba(0, 0, 0, 0.15) 4px
+            );
+            pointer-events: none;
+            z-index: 2;
+        }
+        #screen-no.active {
+            animation: crtFlicker 0.1s linear infinite;
+        }
+        @keyframes crtFlicker {
+            0% { filter: brightness(1) hue-rotate(0deg); }
+            30% { filter: brightness(1.02) hue-rotate(2deg); }
+            60% { filter: brightness(0.98) hue-rotate(-1deg); }
+            100% { filter: brightness(1) hue-rotate(0deg); }
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 480px) {
+            .departures-header .cell,
+            .departures-row .cell {
+                padding: 0.5rem 0.4rem;
+                font-size: clamp(0.6rem, 2.8vw, 0.8rem);
+            }
+            .departures-header,
+            .departures-row {
+                grid-template-columns: 1fr 1.6fr 0.6fr 1.2fr;
+            }
+            .route-display {
+                gap: 0.5rem;
+            }
+            .pass-details {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.5rem;
+            }
+            .answer-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn-yes, .btn-no {
+                width: 100%;
+                max-width: 280px;
+            }
         }
     </style>
 </head>
 <body>
-    <main class="main">
-        <aside class="sidebar">
-            <img class="profile-pic" src="pfp.jpg" alt="Profile Picture">
-            <nav class="nav">
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="resume.html">Resume</a></li>
-                    <li><a href="contact.html">Contact Me</a></li>
-                </ul>
-            </nav>
-        </aside>
-    </main>
 
-    <div class="introduction">
-        <div class="intro-text">
-            <h1>Nikhil Iyer</h1>
-            <h2>Founder and CEO of <a href="https://genda.cloud/">Genda</a></h2>
-            <h3>Statistics & Computer Science at the University of Toronto</h3>
-            <br>
-            <p class="short-intro">
-                Hey there, welcome to my website! I'm Nik and I am currently in my fourth year at the University of Toronto, majoring in Applied Statistics with two minors in Mathematics and Computer Science.<br><br>
-                In my free time, you'll often find me engrossed in books on philosophy and psychology. When I'm not reading, you'll find me getting my adrenaline fix either on the rock climbing wall or while swimming.<br><br>
-                This website is where I showcase what I'm up to, share some thoughts on my interests, and demonstrate my skills and talents. I hope you enjoy!
-            </p>
+    <!-- ==================== SCREEN 1: WELCOME ==================== -->
+    <div id="screen-welcome" class="screen active">
+        <div class="boarding-card">
+            <div class="welcome-overline">Now Boarding</div>
+            <div class="welcome-flight">
+                FLIGHT 214
+                <span>Valentine's Day 2026</span>
+            </div>
+            <div class="welcome-passenger">
+                <div class="label">Passenger</div>
+                <div class="name">KAT</div>
+            </div>
+            <div class="welcome-barcode"></div>
+            <button class="btn" onclick="goToScreen('screen-checkin')">Proceed to Check-In</button>
         </div>
-        <img class="intro-image" src="C:/Users/niyer/Downloads/undraw_Developer_activity_re_39tg.png" alt="Introduction Image">
     </div>
 
+    <!-- ==================== SCREEN 2: CHECK-IN ==================== -->
+    <div id="screen-checkin" class="screen">
+        <div class="checkin-container">
+            <div class="announcement-box">
+                <div class="announcement-text">
+                    <span id="typed-text"></span><span class="cursor"></span>
+                </div>
+            </div>
+            <div class="quiz-section" id="quiz-section">
+                <div class="quiz-question">How did our bioluminescent ocean adventure start?</div>
+                <div class="quiz-options">
+                    <button class="quiz-option" onclick="handleQuizAnswer(this, false)">Nik surprised Kat with the trip</button>
+                    <button class="quiz-option" onclick="handleQuizAnswer(this, false)">They found it completely by accident</button>
+                    <button class="quiz-option" onclick="handleQuizAnswer(this, true)">Kat convinced Nik to go</button>
+                    <button class="quiz-option" onclick="handleQuizAnswer(this, false)">A friend recommended it to them</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SCREEN 3: SECURITY ==================== -->
+    <div id="screen-security" class="screen">
+        <div class="security-container">
+            <div class="security-title">Security Screening</div>
+            <div class="security-items">
+                <div class="security-item" data-result="cleared">
+                    <div class="scan-line"></div>
+                    <span class="item-text">Love for adventure</span>
+                    <span class="item-status">✓</span>
+                </div>
+                <div class="security-item" data-result="cleared">
+                    <div class="scan-line"></div>
+                    <span class="item-text">Matching sense of humor</span>
+                    <span class="item-status">✓</span>
+                </div>
+                <div class="security-item" data-result="cleared">
+                    <div class="scan-line"></div>
+                    <span class="item-text">Unconditional support</span>
+                    <span class="item-status">✓</span>
+                </div>
+                <div class="security-item" data-result="failed">
+                    <div class="scan-line"></div>
+                    <span class="item-text">Plans without Nik</span>
+                    <span class="item-status">✗</span>
+                    <div class="confiscated-stamp">CONFISCATED</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SCREEN 4: DEPARTURE BOARD ==================== -->
+    <div id="screen-departures" class="screen">
+        <div class="departures-container">
+            <div class="departures-title">Departures</div>
+            <div class="departures-board">
+                <div class="departures-header">
+                    <div class="cell">Flight</div>
+                    <div class="cell">Destination</div>
+                    <div class="cell">Gate</div>
+                    <div class="cell">Status</div>
+                </div>
+                <div class="departures-row" data-row="0">
+                    <div class="cell" data-final="FL 001"></div>
+                    <div class="cell" data-final="FRIENDZONE"></div>
+                    <div class="cell" data-final="C3"></div>
+                    <div class="cell"><span class="status-badge status-departed" data-final="DEPARTED"></span></div>
+                </div>
+                <div class="departures-row" data-row="1">
+                    <div class="cell" data-final="FL 102"></div>
+                    <div class="cell" data-final="ADVENTURE"></div>
+                    <div class="cell" data-final="B7"></div>
+                    <div class="cell"><span class="status-badge status-ontime" data-final="ON TIME"></span></div>
+                </div>
+                <div class="departures-row" data-row="2">
+                    <div class="cell" data-final="FL 307"></div>
+                    <div class="cell" data-final="FOREVER"></div>
+                    <div class="cell" data-final="A1"></div>
+                    <div class="cell"><span class="status-badge status-delayed" data-final="DELAYED"></span></div>
+                </div>
+                <div class="departures-row highlight" data-row="3">
+                    <div class="cell" data-final="FL 214"></div>
+                    <div class="cell" data-final="VALENTINE'S"></div>
+                    <div class="cell" data-final="14"></div>
+                    <div class="cell"><span class="status-badge status-boarding" data-final="NOW BOARDING"></span></div>
+                </div>
+            </div>
+            <button class="btn" id="btn-gate" onclick="goToScreen('screen-boarding')">Proceed to Gate 14</button>
+        </div>
+    </div>
+
+    <!-- ==================== SCREEN 5: BOARDING PASS / QUESTION ==================== -->
+    <div id="screen-boarding" class="screen">
+        <div class="boarding-container">
+            <div class="final-pass">
+                <div class="final-pass-header">
+                    <span class="airline-name">Love Airlines</span>
+                    <span class="flight-number">FL 214</span>
+                </div>
+                <div class="final-pass-body">
+                    <div class="route-display">
+                        <div class="route-point">
+                            <div class="route-code">SGL</div>
+                            <div class="route-name">Single Life</div>
+                        </div>
+                        <div class="route-arrow">✈</div>
+                        <div class="route-point">
+                            <div class="route-code">VLD</div>
+                            <div class="route-name">Valentine's Day</div>
+                        </div>
+                    </div>
+                    <div class="pass-details">
+                        <div class="pass-field">
+                            <div class="value">FEB 14</div>
+                            <div class="label">Date</div>
+                        </div>
+                        <div class="pass-field">
+                            <div class="value">14</div>
+                            <div class="label">Gate</div>
+                        </div>
+                        <div class="pass-field">
+                            <div class="value">NEXT TO NIK</div>
+                            <div class="label">Seat</div>
+                        </div>
+                    </div>
+                    <div class="pass-barcode"></div>
+                </div>
+            </div>
+
+            <div class="valentine-question">Will you be my Valentine?</div>
+            <div class="answer-buttons">
+                <button class="btn-yes" onclick="handleYes()">YES</button>
+                <button class="btn-no" id="btn-no" onclick="handleNo()">NO</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SCREEN 6: YES CELEBRATION ==================== -->
+    <div id="screen-yes" class="screen">
+        <div class="celebration-container">
+            <div class="celebration-emoji">💖</div>
+            <div class="celebration-title">Welcome Aboard, Valentine!</div>
+            <div class="celebration-subtitle">Flight 214 is now departing. Final destination: forever.</div>
+            <div class="echo-section">
+                <div class="echo-dog">🐶</div>
+                <div class="echo-text">Echo approves! 🐾</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SCREEN 7: NO / GLITCH ==================== -->
+    <div id="screen-no" class="screen">
+        <div class="glitch-container">
+            <div class="glitch-emoji">🐶</div>
+            <div class="glitch-text">SYSTEM ERROR</div>
+            <div class="glitch-subtext">Invalid response detected. Echo is not happy.</div>
+            <div class="glitch-redirect">Redirecting to correct answer...</div>
+        </div>
+    </div>
+
+    <!-- Confetti -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <script>
+        /* ==================== STATE ==================== */
+        let currentScreen = 'screen-welcome';
+        let audioCtx = null;
+
+        /* ==================== SCREEN NAVIGATION ==================== */
+        function goToScreen(targetId) {
+            const current = document.getElementById(currentScreen);
+            const target = document.getElementById(targetId);
+            if (!current || !target || currentScreen === targetId) return;
+
+            current.classList.remove('active');
+            target.classList.add('active');
+            currentScreen = targetId;
+
+            // Trigger screen-specific init
+            if (targetId === 'screen-checkin') startTyping();
+            if (targetId === 'screen-security') startSecurityScan();
+            if (targetId === 'screen-departures') startDepartureBoard();
+
+            playChime();
+        }
+
+        /* ==================== AIRPORT CHIME (Web Audio) ==================== */
+        function playChime() {
+            try {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const now = audioCtx.currentTime;
+
+                const osc1 = audioCtx.createOscillator();
+                const gain1 = audioCtx.createGain();
+                osc1.type = 'sine';
+                osc1.frequency.value = 830;
+                gain1.gain.setValueAtTime(0.15, now);
+                gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+                osc1.connect(gain1).connect(audioCtx.destination);
+                osc1.start(now);
+                osc1.stop(now + 0.7);
+
+                const osc2 = audioCtx.createOscillator();
+                const gain2 = audioCtx.createGain();
+                osc2.type = 'sine';
+                osc2.frequency.value = 622;
+                gain2.gain.setValueAtTime(0.15, now + 0.35);
+                gain2.gain.exponentialRampToValueAtTime(0.001, now + 1.05);
+                osc2.connect(gain2).connect(audioCtx.destination);
+                osc2.start(now + 0.35);
+                osc2.stop(now + 1.05);
+            } catch (e) {
+                // Audio not supported or blocked; fail silently
+            }
+        }
+
+        /* ==================== SCREEN 2: TYPING + QUIZ ==================== */
+        const announcementText = "Attention passenger Kat. Please verify your identity at the check-in counter.";
+        let typingStarted = false;
+
+        function startTyping() {
+            if (typingStarted) return;
+            typingStarted = true;
+
+            const el = document.getElementById('typed-text');
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i < announcementText.length) {
+                    el.textContent += announcementText[i];
+                    i++;
+                } else {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        document.getElementById('quiz-section').classList.add('visible');
+                    }, 400);
+                }
+            }, 35);
+        }
+
+        let quizAnswered = false;
+        function handleQuizAnswer(btn, isCorrect) {
+            if (quizAnswered) return;
+
+            if (isCorrect) {
+                quizAnswered = true;
+                btn.classList.add('correct');
+                // Disable all options
+                document.querySelectorAll('.quiz-option').forEach(o => o.style.pointerEvents = 'none');
+                setTimeout(() => goToScreen('screen-security'), 1000);
+            } else {
+                btn.classList.add('wrong');
+                btn.style.pointerEvents = 'none';
+                setTimeout(() => {
+                    btn.classList.remove('wrong');
+                }, 600);
+            }
+        }
+
+        /* ==================== SCREEN 3: SECURITY SCAN ==================== */
+        let securityStarted = false;
+
+        function startSecurityScan() {
+            if (securityStarted) return;
+            securityStarted = true;
+
+            const items = document.querySelectorAll('.security-item');
+            items.forEach((item, index) => {
+                const delay = index * 2200;
+
+                setTimeout(() => {
+                    item.classList.add('visible');
+                    item.classList.add('scanning');
+                }, delay);
+
+                setTimeout(() => {
+                    const status = item.querySelector('.item-status');
+                    const result = item.dataset.result;
+                    status.classList.add('show');
+
+                    if (result === 'cleared') {
+                        status.classList.add('cleared');
+                    } else {
+                        status.classList.add('failed');
+                        const stamp = item.querySelector('.confiscated-stamp');
+                        setTimeout(() => stamp.classList.add('show'), 200);
+                    }
+                }, delay + 1600);
+            });
+
+            // Auto-proceed after all items scanned
+            const totalTime = items.length * 2200 + 1200;
+            setTimeout(() => goToScreen('screen-departures'), totalTime);
+        }
+
+        /* ==================== SCREEN 4: DEPARTURE BOARD ==================== */
+        let boardStarted = false;
+        const flipChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+        function startDepartureBoard() {
+            if (boardStarted) return;
+            boardStarted = true;
+
+            const rows = document.querySelectorAll('.departures-row');
+            const allCells = [];
+
+            rows.forEach((row, rowIdx) => {
+                const cells = row.querySelectorAll('.cell');
+                cells.forEach((cell, cellIdx) => {
+                    const finalText = cell.dataset.final || cell.querySelector('[data-final]')?.dataset.final;
+                    if (!finalText) return;
+
+                    const target = cell.dataset.final ? cell : cell.querySelector('[data-final]');
+                    allCells.push({ target, finalText, rowIdx, cellIdx });
+                });
+            });
+
+            allCells.forEach(({ target, finalText, rowIdx, cellIdx }) => {
+                const settleDelay = (rowIdx * 4 + cellIdx) * 180 + 400;
+                let cycleCount = 0;
+                const maxCycles = Math.floor(settleDelay / 50);
+
+                const interval = setInterval(() => {
+                    if (cycleCount >= maxCycles) {
+                        clearInterval(interval);
+                        target.textContent = finalText;
+                        return;
+                    }
+                    let randomStr = '';
+                    for (let i = 0; i < finalText.length; i++) {
+                        randomStr += flipChars[Math.floor(Math.random() * flipChars.length)];
+                    }
+                    target.textContent = randomStr;
+                    cycleCount++;
+                }, 50);
+            });
+
+            // Show button after board settles
+            const totalSettleTime = allCells.length * 180 + 800;
+            setTimeout(() => {
+                document.getElementById('btn-gate').classList.add('visible');
+            }, totalSettleTime);
+        }
+
+        /* ==================== SCREEN 5: NO BUTTON DODGE ==================== */
+        const noBtn = document.getElementById('btn-no');
+        const canHover = window.matchMedia('(hover: hover)').matches;
+
+        if (canHover && noBtn) {
+            noBtn.addEventListener('mouseover', () => {
+                const x = (Math.random() - 0.5) * 260;
+                const y = (Math.random() - 0.5) * 160;
+                noBtn.style.transform = `translate(${x}px, ${y}px)`;
+            });
+        }
+
+        /* ==================== SCREEN 6: YES / CONFETTI ==================== */
+        function handleYes() {
+            goToScreen('screen-yes');
+            launchConfetti();
+            setTimeout(launchConfetti, 500);
+        }
+
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let confettiRunning = false;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const confettiColors = ['#f59e0b', '#ec4899', '#e11d48', '#22c55e', '#3b82f6', '#ffffff', '#a855f7'];
+
+        function launchConfetti() {
+            for (let i = 0; i < 80; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: -10 - Math.random() * 50,
+                    vx: (Math.random() - 0.5) * 8,
+                    vy: Math.random() * 3 + 2,
+                    rotation: Math.random() * 360,
+                    rotationSpeed: (Math.random() - 0.5) * 12,
+                    color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+                    width: Math.random() * 10 + 5,
+                    height: Math.random() * 6 + 3,
+                    opacity: 1
+                });
+            }
+
+            if (!confettiRunning) {
+                confettiRunning = true;
+                animateConfetti();
+            }
+        }
+
+        function animateConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.12;
+                p.vx *= 0.99;
+                p.rotation += p.rotationSpeed;
+                p.opacity -= 0.004;
+
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate((p.rotation * Math.PI) / 180);
+                ctx.globalAlpha = Math.max(p.opacity, 0);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.width / 2, -p.height / 2, p.width, p.height);
+                ctx.restore();
+            });
+
+            particles = particles.filter(p => p.opacity > 0 && p.y < canvas.height + 50);
+
+            if (particles.length > 0) {
+                requestAnimationFrame(animateConfetti);
+            } else {
+                confettiRunning = false;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        /* ==================== SCREEN 7: NO / GLITCH REDIRECT ==================== */
+        function handleNo() {
+            goToScreen('screen-no');
+            setTimeout(() => {
+                goToScreen('screen-boarding');
+            }, 2500);
+        }
+    </script>
 </body>
 </html>
